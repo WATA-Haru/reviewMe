@@ -1,39 +1,74 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-const pokeNum:Ref<number> = ref(0);
-const pokemonImgURL:Ref<string> = ref('');
-type Pokemon = {name: string, weight: number, image: string};
+import { reactive, onMounted } from 'vue'
+const startPokeNum = 477
+interface Pokemon {
+  id: number
+  name: string
+  weight: number
+  sprites: {
+    front_default: string
+    front_shiny: string
+  }
+}
+const pokeData: Pokemon = reactive({
+  id: startPokeNum,
+  name: '',
+  weight: 0,
+  sprites: {
+    front_default: '',
+    front_shiny: '',
+  },
+})
 
-const getPokeData = async function (
-  pokeNum: Ref<number>,
-): Promise<object | null> {
+const getPokeData = async function (pokeNum: number): Promise<object | null> {
   const baseURL: string = 'https://pokeapi.co/api/v2/pokemon/'
-  
-  try{
-    const response = await fetch(baseURL + pokeNum.value.toString());
+
+  try {
+    const response = await fetch(baseURL + pokeNum.toString())
     if (!response.ok) {
-      throw new Error(`response.status=${response.status}, response.statusText = ${response.statusText}`);
+      throw new Error(
+        `response.status=${response.status}, response.statusText = ${response.statusText}`,
+      )
     }
     const data = await response.json()
-    return data;
-  }
-  catch (error) {
-    console.log(error);
-    return null;
+    return data
+  } catch (error) {
+    console.log(error)
+    return null
   }
 }
 
+onMounted(() => {
+  setNextPokemon()
+})
+
 const setNextPokemon = async (): Promise<void> => {
-  pokeNum.value++;
-  const pokeData = await getPokeData(pokeNum)
-  if (!pokeData) {
-    return null;
+  pokeData.id++
+  const response = await getPokeData(pokeData.id)
+  if (!response) {
+    return null
   }
-  pokemonImgURL.value = pokeData.sprites.front_shiny
-  console.log(pokemonImgURL)
-  console.log(pokeData)
-  console.log(pokeData.sprites.front_shiny)
-  pokemonImgURL.value = pokeData.sprites.front_shiny;
+  if (
+    'name' in response &&
+    'weight' in response &&
+    'sprites' in response
+  )
+  {
+    const {
+      name,
+      weight,
+      sprites
+    }  = response as {
+        name: string;
+        weight: number;
+        sprites: { front_default: string, front_shiny: string }
+    }
+    Object.assign(pokeData, {
+      name,
+      weight,
+      sprites,
+    })
+  }
 }
 </script>
 
@@ -42,9 +77,9 @@ const setNextPokemon = async (): Promise<void> => {
   <!-- <button @click="incrementNum">Next</button> -->
   <div class="wrapper">
     <button @click="setNextPokemon()">next</button>
-    <img :src="pokemonImgURL" width="300px" height="300px"/>
+    <h3>{{ pokeData.name }}</h3>
+    <img :src="pokeData.sprites.front_default" width="300px" height="300px" />
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
