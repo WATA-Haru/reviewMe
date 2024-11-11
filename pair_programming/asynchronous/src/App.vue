@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import axios from 'axios';
-import { ref, shallowRef, onMounted, type ShallowRef } from 'vue'
+import axios from 'axios'
+import { onMounted, shallowRef, type ShallowRef, triggerRef, watch } from 'vue'
+import Button from './components/Button.vue'
 
 type Pokemon = {
-  id: number;
-  name: string;
-  weight: number;
-  sprites: Sprites; 
+  id: number
+  name: string
+  weight: number
+  sprites: Sprites
 }
 
 interface Sprites {
-  front_default:string,
+  front_default: string
   front_shiny: string
 }
 
-const startPokeId = 477;
-const notImagePath = '/src/assets/No_Image_Available.jpg';
-const canNotGetImagePath = '/src/assets/canNotGetImagePath.jpg';
+const startPokeId = 9
+const notImagePath = '/src/assets/No_Image_Available.jpg'
+const canNotGetImagePath = '/src/assets/canNotGetImage.jpg'
 const shallowPokeDataRef: ShallowRef<Pokemon> = shallowRef({
   id: startPokeId,
   name: 'Nan',
@@ -24,8 +25,18 @@ const shallowPokeDataRef: ShallowRef<Pokemon> = shallowRef({
   sprites: {
     front_default: notImagePath,
     front_shiny: notImagePath,
-  }
-});
+  },
+})
+
+const errorPokeData: Pokemon = {
+  id: 0,
+  name: 'Something Went Wrong!',
+  weight: 0,
+  sprites: {
+    front_default: canNotGetImagePath,
+    front_shiny: canNotGetImagePath,
+  },
+}
 
 const getPokeData = async function (pokeNum: number): Promise<object | null> {
   const baseURL: string = 'https://pokeapi.co/api/v2/pokemon/'
@@ -46,8 +57,8 @@ const getPokeData = async function (pokeNum: number): Promise<object | null> {
 }
 
 const isPokeTypeValid = (value: unknown | Pokemon): value is Pokemon => {
-  if (typeof value !== "object") {
-    return false;
+  if (typeof value !== 'object') {
+    return false
   }
   // https://typescriptbook.jp/reference/statements/unknown
   const mayBePokemon = value as Record<keyof Pokemon, unknown>
@@ -59,45 +70,66 @@ const isPokeTypeValid = (value: unknown | Pokemon): value is Pokemon => {
     typeof (mayBePokemon.sprites as Sprites).front_default === undefined &&
     typeof (mayBePokemon.sprites as Sprites).front_shiny === undefined
   ) {
-    return false;
+    return false
   }
-  return true;
+  return true
 }
 
 const isValid = (response: unknown): response is Pokemon => {
   if (!response) {
-    return false;
+    return false
   }
   if (!isPokeTypeValid) {
-    return false;
+    return false
   }
-  return true;
+  return true
 }
 
 const setPokemon = async (): Promise<void> => {
-  const currentId = shallowPokeDataRef.value.id;
-  const response = await getPokeData(currentId + 1)
+  const response = await getPokeData(shallowPokeDataRef.value.id)
 
   // if id is invalid set canNotGetImagePath to imagePath
   if (!isValid(response)) {
-    shallowPokeDataRef.value.sprites.front_default = canNotGetImagePath;
-    shallowPokeDataRef.value.sprites.front_shiny = canNotGetImagePath;
+    shallowPokeDataRef.value = errorPokeData
     return
   }
-  //set pokeId
-  shallowPokeDataRef.value = response;
+  shallowPokeDataRef.value = response
+}
+
+watch(
+  () => shallowPokeDataRef.value.id,
+  () => {
+    setPokemon()
+  },
+)
+onMounted(() => {
+  setPokemon()
+})
+
+const incrementNum = () => {
+  shallowPokeDataRef.value.id++
+  triggerRef(shallowPokeDataRef)
+}
+const decrementNum = () => {
+  shallowPokeDataRef.value.id--
+  triggerRef(shallowPokeDataRef)
 }
 </script>
 
 <template>
   <h1>Pokemon</h1>
-  <!-- <button @click="incrementNum">Next</button> -->
   <div class="wrapper">
-    <button @click="setPokemon()">next</button>
-    <h3>{{ shallowPokeDataRef.name }}</h3>
-    <img :src="shallowPokeDataRef.sprites.front_default" width="300px" height="300px" />
+    <Button emitName="prev-pokemon" @prev-pokemon="decrementNum"> prev </Button>
+    <Button emitName="next-pokemon" @next-pokemon="incrementNum"> Next </Button>
+
+    <h3>Name: {{ shallowPokeDataRef.name }}</h3>
+    <h3>Number: {{ shallowPokeDataRef.id }}</h3>
+    <img
+      :src="shallowPokeDataRef.sprites.front_default"
+      width="300px"
+      height="300px"
+    />
   </div>
 </template>
 
 <style scoped></style>
-
