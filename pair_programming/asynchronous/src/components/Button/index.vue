@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// import { defineProps, defineEmits } from 'vue'
-
 const props = defineProps<{
   emitName: string
 }>()
@@ -24,7 +22,7 @@ const handleClick = () => {
   border-radius: 30px;
   border: none;
   background-color: #f3f313;
-  font-size:20px;
+  font-size: 20px;
+  margin-inline: 10px;
 }
-
 </style>

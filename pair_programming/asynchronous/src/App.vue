@@ -1,23 +1,11 @@
 <script setup lang="ts">
-import axios from 'axios'
 import { onMounted, shallowRef, type ShallowRef, triggerRef, watch } from 'vue'
-import Button from './components/Button.vue'
-
-type Pokemon = {
-  id: number
-  name: string
-  weight: number
-  sprites: Sprites
-}
-
-interface Sprites {
-  front_default: string
-  front_shiny: string
-}
+import { updatePokeData } from './components/PokemonViewer/container/composables/updatePokeData'
+import Button from './components/Button/index.vue'
+import PokemonViewerPresentation from './components/PokemonViewer/Presentation/index.vue'
 
 const startPokeId = 9
 const notImagePath = '/src/assets/No_Image_Available.jpg'
-const canNotGetImagePath = '/src/assets/canNotGetImage.jpg'
 const shallowPokeDataRef: ShallowRef<Pokemon> = shallowRef({
   id: startPokeId,
   name: 'Nan',
@@ -28,108 +16,59 @@ const shallowPokeDataRef: ShallowRef<Pokemon> = shallowRef({
   },
 })
 
-const errorPokeData: Pokemon = {
-  id: 0,
-  name: 'Something Went Wrong!',
-  weight: 0,
-  sprites: {
-    front_default: canNotGetImagePath,
-    front_shiny: canNotGetImagePath,
-  },
-}
-
-const getPokeData = async function (pokeNum: number): Promise<object | null> {
-  const baseURL: string = 'https://pokeapi.co/api/v2/pokemon/'
-
-  try {
-    const response = await fetch(baseURL + pokeNum.toString())
-    if (!response.ok) {
-      throw new Error(
-        `response.status=${response.status}, response.statusText = ${response.statusText}`,
-      )
-    }
-    const data = await response.json()
-    return data
-  } catch (error) {
-    console.log(error)
-    return null
-  }
-}
-
-const isPokeTypeValid = (value: unknown | Pokemon): value is Pokemon => {
-  if (typeof value !== 'object') {
-    return false
-  }
-  // https://typescriptbook.jp/reference/statements/unknown
-  const mayBePokemon = value as Record<keyof Pokemon, unknown>
-  if (
-    typeof mayBePokemon.id === undefined &&
-    typeof mayBePokemon.name === undefined &&
-    typeof mayBePokemon.weight === undefined &&
-    mayBePokemon.sprites &&
-    typeof (mayBePokemon.sprites as Sprites).front_default === undefined &&
-    typeof (mayBePokemon.sprites as Sprites).front_shiny === undefined
-  ) {
-    return false
-  }
-  return true
-}
-
-const isValid = (response: unknown): response is Pokemon => {
-  if (!response) {
-    return false
-  }
-  if (!isPokeTypeValid) {
-    return false
-  }
-  return true
-}
-
-const setPokemon = async (): Promise<void> => {
-  const response = await getPokeData(shallowPokeDataRef.value.id)
-
-  // if id is invalid set canNotGetImagePath to imagePath
-  if (!isValid(response)) {
-    shallowPokeDataRef.value = errorPokeData
-    return
-  }
-  shallowPokeDataRef.value = response
-}
-
 watch(
   () => shallowPokeDataRef.value.id,
   () => {
-    setPokemon()
+    updatePokeData(shallowPokeDataRef)
   },
 )
 onMounted(() => {
-  setPokemon()
+  updatePokeData(shallowPokeDataRef)
 })
 
-const incrementNum = () => {
+const incrementId = () => {
   shallowPokeDataRef.value.id++
   triggerRef(shallowPokeDataRef)
 }
-const decrementNum = () => {
+
+const decrementId = () => {
   shallowPokeDataRef.value.id--
   triggerRef(shallowPokeDataRef)
 }
+
+document.addEventListener('keydown', (e: KeyboardEvent) => {
+  if (!e) {
+    return
+  } else if (e.key === 'ArrowLeft') {
+    decrementId()
+  } else if (e.key === 'ArrowRight') {
+    incrementId()
+  }
+})
 </script>
 
 <template>
-  <h1>Pokemon</h1>
-  <div class="wrapper">
-    <Button emitName="prev-pokemon" @prev-pokemon="decrementNum"> prev </Button>
-    <Button emitName="next-pokemon" @next-pokemon="incrementNum"> Next </Button>
+  <main class="main">
+    <h1 class="title">Pokemon</h1>
+    <PokemonViewerPresentation :poke-data="shallowPokeDataRef" />
 
-    <h3>Name: {{ shallowPokeDataRef.name }}</h3>
-    <h3>Number: {{ shallowPokeDataRef.id }}</h3>
-    <img
-      :src="shallowPokeDataRef.sprites.front_default"
-      width="300px"
-      height="300px"
-    />
-  </div>
+    <div class="button-wrapper">
+      <Button emitName="prev-pokemon" @prev-pokemon="decrementId">
+        prev
+      </Button>
+      <Button emitName="next-pokemon" @next-pokemon="incrementId">
+        Next
+      </Button>
+    </div>
+  </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+.title {
+  text-align: center;
+}
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+</style>
