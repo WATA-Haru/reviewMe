@@ -1,4 +1,7 @@
 export const isPokeTypeValid = (value: unknown | Pokemon): value is Pokemon => {
+  if (!value) {
+    return false
+  }
   if (typeof value !== 'object') {
     return false
   }
