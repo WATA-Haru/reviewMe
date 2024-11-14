@@ -1,10 +1,26 @@
 <script setup lang="ts">
+
+defineOptions({
+  name: 'PokemonViewerPresentation',
+})
+
 const props = defineProps<{
   pokeData: Pokemon
 }>()
 const emits = defineEmits(['prev-pokemon', 'next-pokemon'])
 const handlePrev = () => emits('prev-pokemon')
 const handleNext = () => emits('next-pokemon')
+
+document.addEventListener('keydown', (event: Event) => {
+  if (!(event instanceof KeyboardEvent)) {
+    return
+  }
+  if (event.key === 'ArrowLeft') {
+    handlePrev()
+  } else if (event.key === 'ArrowRight') {
+    handleNext()
+  }
+})
 </script>
 
 <template>
@@ -14,6 +30,7 @@ const handleNext = () => emits('next-pokemon')
     <h3>Number: {{ props.pokeData.id }}</h3>
     <img
       :src="props.pokeData.sprites.front_default"
+      onerror="this.src='/src/assets/No_Image_Available.jpg'"
       width="300px"
       height="300px"
     />

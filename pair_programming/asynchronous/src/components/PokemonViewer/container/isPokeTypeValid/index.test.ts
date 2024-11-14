@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { isPokeTypeValid } from ".";
+import { isPokeTypeValid } from '.'
 
 test('Pokemon型を入れたとき、Trueを返すこと', () => {
   const sampleData: Pokemon = {
@@ -9,17 +9,17 @@ test('Pokemon型を入れたとき、Trueを返すこと', () => {
     sprites: {
       front_default: '',
       front_shiny: '',
-    }
-  };
+    },
+  }
   expect(isPokeTypeValid(sampleData)).toBe(true)
 })
 
 test('nullを入れたとき、Falseを返すこと', () => {
-  console.log(isPokeTypeValid(null));
+  console.log(isPokeTypeValid(null))
   expect(isPokeTypeValid(null)).toBe(false)
 })
 
 test('プリミティブな値(-1)を入れたとき、Falseを返すこと', () => {
-  console.log(isPokeTypeValid(-1));
+  console.log(isPokeTypeValid(-1))
   expect(isPokeTypeValid(-1)).toBe(false)
 })

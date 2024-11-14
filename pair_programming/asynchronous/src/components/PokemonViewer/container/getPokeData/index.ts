@@ -1,3 +1,4 @@
+import { POKEAPI_URL } from '@/const/constValues'
 /**
  * @description PokeAPIからポケモンのデータをfetchして取得する。取得できなかった場合はnullを返す。
  *
@@ -5,8 +6,7 @@
 export const getPokeData = async function (
   pokeNum: number,
 ): Promise<object | null> {
-  const baseURL: string = 'https://pokeapi.co/api/v2/pokemon/'
-
+  const baseURL: string = POKEAPI_URL
   try {
     const response = await fetch(baseURL + pokeNum.toString())
     if (!response.ok) {
