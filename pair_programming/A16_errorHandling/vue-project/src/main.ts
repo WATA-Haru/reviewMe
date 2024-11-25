@@ -1,15 +1,14 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 
-
-async function prepare() {
-  if (import.meta.env.MODE === 'development') {
-    const { worker } = await import('./mocks/worker');
-    worker.start();
+async function enableMocking() {
+  if (process.env.NODE_ENV !== 'development') {
+    return
   }
-  return Promise.resolve();
+  const { worker } = await import('./mocks/worker');
+  return worker.start();
 }
 
-prepare().then(() => {
+enableMocking().then(() => {
   createApp(App).mount('#app');
 });
