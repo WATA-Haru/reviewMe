@@ -1,6 +1,15 @@
-import './assets/main.css'
-
 import { createApp } from 'vue'
 import App from './App.vue'
 
-createApp(App).mount('#app')
+
+async function prepare() {
+  if (import.meta.env.MODE === 'development') {
+    const { worker } = await import('./mocks/worker');
+    worker.start();
+  }
+  return Promise.resolve();
+}
+
+prepare().then(() => {
+  createApp(App).mount('#app');
+});

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import ErrorHandling from './components/ErrorHandling.vue'
+import HandleAPIResponse from '@/components/HandleAPIResponse/container/index.vue'
 </script>
-
 <template>
   <main>
-    <ErrorHandling />
+    <h1>hoge</h1>
+    <HandleAPIResponse />
   </main>
 </template>
 
