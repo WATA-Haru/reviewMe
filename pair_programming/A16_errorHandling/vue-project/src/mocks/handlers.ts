@@ -13,18 +13,18 @@ const getRandomInt = <N extends number>(max: N): zeroToLength<N> => {
   return Math.floor(Math.random() * max) as zeroToLength<N>
 }
 
-const responseList: { status: number, statusTxt: string }[] = [
+const responseList: { status: number, statusText: string }[] = [
   {
     status: 200,
-    statusTxt: 'ok'
+    statusText: 'ok'
   },
   {
     status: 404,
-    statusTxt: 'notFoundError'
+    statusText: 'notFoundError'
   },
   {
     status: 500,
-    statusTxt: 'serverError'
+    statusText: 'serverError'
   }
 ]
 
@@ -39,7 +39,7 @@ export const handlers = [
 
     const [response] = zeroToLengthArray.filter(index => index === randomNum).map(index => responseList[index])
     return response
-      ? HttpResponse.json(response, { status: response.status })
+      ? HttpResponse.json(response, { status: response.status, statusText: response.statusText })
       : undefined
   }),
 ]
