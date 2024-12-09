@@ -1,5 +1,5 @@
-import { ref } from "vue"
-import {type Ref } from "vue"
+import { ref, readonly } from "vue"
+import { type Ref } from "vue"
 import { defineStore } from 'pinia'
 import { type userInfoType } from '../types/userInfo.ts'
 
@@ -10,15 +10,34 @@ export const useUserInfoManager = defineStore('info-manager', ()=> {
     authority: undefined
   })
 
+  //const setUserInfo = (info: Partial<userInfoType>):void => {
+  //  userInfo.value = { ...userInfo.value, ...info }
+  //}
+  //
+
+  //**before
+  //const setUserInfo = ({name, age, authority}: userInfoType):void => {
+  //  userInfo.value.name = name
+  //  userInfo.value.age = age
+  //  userInfo.value.authority = authority
+  //}
+
+  //**after
   const setUserInfo = ({name, age, authority}: userInfoType):void => {
-    userInfo.value.name = name
-    userInfo.value.age = age
-    userInfo.value.authority = authority
+    if (name) {
+      userInfo.value.name = name
+    }
+    if (age) {
+      userInfo.value.age = age
+    }
+    if (authority) {
+      userInfo.value.authority = authority
+    }
   }
 
-  const getUserInfo = ():Ref<userInfoType> => {
-    return userInfo
+  const getUserInfo = ():Readonly<Ref<userInfoType>> => {
+    return readonly(userInfo)
   }
-  return { userInfo, setUserInfo, getUserInfo}
+  return { setUserInfo, getUserInfo}
 })
 
