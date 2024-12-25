@@ -58,4 +58,3 @@ export type Result = {
   prefname: PrefName
   address2: string
 }
-
