@@ -53,8 +53,8 @@ export type PrefName = (typeof prefCodeName)[keyof typeof prefCodeName]
 
 export type PostalCode = `${number}-${number}` & { __bland: 'PostalCode' }
 export type Result = {
-  postalCode: PostalCode
-  prefcode: PrefCode
-  prefname: PrefName
-  address2: string
+  postalCode?: PostalCode
+  prefcode?: PrefCode
+  prefname?: PrefName
+  address2?: string
 }
