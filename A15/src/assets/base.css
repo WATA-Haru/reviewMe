@@ -1,6 +1,5 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
-
 }
 
 @media (prefers-color-scheme: dark) {
@@ -21,4 +20,3 @@
 *::before,
 *::after {
 }
-
