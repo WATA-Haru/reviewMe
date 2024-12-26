@@ -2,6 +2,9 @@ import { describe, test, expect } from 'vitest'
 import { isPostalCode } from './index.ts'
 
 describe('isPostalCode test', () => {
+  test('引数がstringでない(ここではnull)のとき、falseを返すこと', () => {
+    expect(isPostalCode(null)).toBe(false)
+  })
   test('郵便番号が000-000ときisPostalCodeがtrueを返すこと', () => {
     expect(isPostalCode('000-0000')).toBe(true)
   })
