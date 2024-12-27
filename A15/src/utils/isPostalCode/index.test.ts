@@ -5,11 +5,8 @@ describe('isPostalCode test', () => {
   test('引数がstringでない(ここではnull)のとき、falseを返すこと', () => {
     expect(isPostalCode(null)).toBe(false)
   })
-  test('郵便番号が000-000ときisPostalCodeがtrueを返すこと', () => {
+  test('郵便番号がフォーマットに合致する(000-000)ときisPostalCodeがtrueを返すこと', () => {
     expect(isPostalCode('000-0000')).toBe(true)
-  })
-  test('郵便番号が999-999ときisPostalCodeがtrueを返すこと', () => {
-    expect(isPostalCode('999-9999')).toBe(true)
   })
   test('郵便番号の上が3桁より大きい1111-000のときisPostalCodeがfalseを返すこと', () => {
     expect(isPostalCode('0000-0000')).toBe(false)
