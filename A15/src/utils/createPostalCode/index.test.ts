@@ -3,12 +3,12 @@ import { isPostalCode } from '@/utils/isPostalCode/index.ts'
 import { createPostalCode } from './index.ts'
 
 describe('createPostalCode', () => {
-  test('createPostalCodeが\"111-0000\"を受け取る時にPostalCode型が返ること', () => {
+  test('引数がPostalCodeのフォーマットに従っている場合(\"111-0000\")、返り値がPostalCode型になること', () => {
     const a = createPostalCode('111-0000')
     expect(isPostalCode(a)).toBe(true)
   })
 
-  test("createPostalCodeが'2'のときnullが返ること", () => {
+  test('引数がPostalCodeのフォーマットに従っていない場合(\"2\")、返り値がnullになること', () => {
     const a = createPostalCode('2')
     expect(a).toBe(null)
   })
