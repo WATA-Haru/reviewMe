@@ -1,1 +1,1 @@
-export type ZipCode = `${number}` & { __bland: 'ZipCode' }
+export type ZipCode = `${number}` & { __brand: 'ZipCode' }
