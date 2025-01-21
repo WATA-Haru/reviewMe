@@ -3,7 +3,7 @@ import { type PrefCode } from '@/types/PrefCode.ts'
 import { type PrefName } from '@/types/PrefName.ts'
 
 export type FormResult = {
-  postalCode?: ZipCode
+  zipCode?: ZipCode
   prefcode?: PrefCode
   prefname?: PrefName
   address2?: string
