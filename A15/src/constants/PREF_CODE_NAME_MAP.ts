@@ -1,4 +1,4 @@
-export const prefCodeName = {
+export const PREF_CODE_NAME_MAP = {
   1: '北海道',
   2: '青森県',
   3: '岩手県',
@@ -47,14 +47,3 @@ export const prefCodeName = {
   46: '鹿児島県',
   47: '沖縄県',
 } as const
-
-export type PrefCode = keyof typeof prefCodeName
-export type PrefName = (typeof prefCodeName)[keyof typeof prefCodeName]
-
-export type PostalCode = `${number}-${number}` & { __bland: 'PostalCode' }
-export type Result = {
-  postalCode?: PostalCode
-  prefcode?: PrefCode
-  prefname?: PrefName
-  address2?: string
-}
