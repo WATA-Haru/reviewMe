@@ -5,7 +5,7 @@ import { createZipCode } from './index.ts'
 describe('createZipCode', () => {
   test('引数がZipCodeのフォーマットに従っている場合(\"1234567\")、返り値がZipCode型になること', () => {
     const result = createZipCode('1234567')
-    expect(isZipCode(result)).toBe(true)
+    expect(result).toBe('1234567')
   })
 
   test('引数がZipCodeのフォーマットに従っていない場合(\"2\")、返り値がnullになること', () => {
