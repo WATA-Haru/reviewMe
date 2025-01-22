@@ -7,4 +7,3 @@ export const zipCloudURLWrapper = (path: string | null = null): string => {
     return new URL(path, base).toString()
   }
 }
-

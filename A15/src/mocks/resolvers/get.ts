@@ -17,7 +17,7 @@ const sampleData: ZipCloudResponse = {
     },
     {
       address1: '北海道',
-  //400 errro pattern
+      //400 errro pattern
       address2: '美唄市',
       address3: '上美唄町南',
       kana1: 'ﾎｯｶｲﾄﾞｳ',

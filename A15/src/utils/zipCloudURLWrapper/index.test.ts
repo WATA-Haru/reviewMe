@@ -14,4 +14,3 @@ describe('zipCloudURLWrapper', () => {
     expect(zipCloudURLWrapper('something')).toBe(`${base}something`)
   })
 })
-

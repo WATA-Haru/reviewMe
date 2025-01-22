@@ -20,4 +20,3 @@ describe('getAddressFromZipCode', () => {
     expect(response?.data?.status).toBe(400)
   })
 })
-
