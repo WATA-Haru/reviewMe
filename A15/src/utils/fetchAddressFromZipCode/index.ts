@@ -8,7 +8,7 @@ const instance = axios.create({
   baseURL: zipCloudURLWrapper(''),
 })
 
-export const getAddressFromZipCode = async (
+export const fetchAddressFromZipCode = async (
   zipCode: ZipCode | null,
 ): Promise<AxiosResponse<ZipCloudResponse, never> | void> => {
   try {
