@@ -13,8 +13,7 @@ describe('fetchAddressFromZipCode', () => {
     const response = await fetchAddressFromZipCode(zipCode)
     expect(response?.data?.status).toBe(200)
   })
-  test('fetchAddressFromZipCodeに空の文字列を渡した際のstatusが400であること', async () => {
-    const response = await fetchAddressFromZipCode(null)
-    expect(response?.data?.status).toBe(400)
+  test('fetchAddressFromZipCodeにnullを渡した際に例外がthrowされること', async () => {
+    await expect(() => fetchAddressFromZipCode(null)).rejects.toThrowError('zipCode is null')
   })
 })

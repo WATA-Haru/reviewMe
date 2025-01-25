@@ -11,12 +11,12 @@ const instance = axios.create({
 export const fetchAddressFromZipCode = async (
   zipCode: ZipCode | null,
 ): Promise<AxiosResponse<ZipCloudResponse, never> | void> => {
+  if (zipCode === null) {
+    throw new Error('zipCode is null')
+  }
   try {
-    if (zipCode === null) {
-      return await instance.get('')
-    }
     return await instance.get(`?zipcode=${zipCode}`)
   } catch (error) {
-    console.error(error)
+    throw error
   }
 }
