@@ -1,5 +1,4 @@
 import { describe, test, expect } from 'vitest'
-import { isZipCode } from '@/utils/isZipCode/index.ts'
 import { createZipCode } from './index.ts'
 
 describe('createZipCode', () => {

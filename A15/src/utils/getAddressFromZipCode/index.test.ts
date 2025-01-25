@@ -1,7 +1,6 @@
 import { describe, test, beforeAll, afterEach, afterAll, expect } from 'vitest'
 import { server } from '@/mocks/node'
 import { getAddressFromZipCode } from '@/utils/getAddressFromZipCode/index.ts'
-import { createZipCode } from '@/utils/createZipCode/index.ts'
 import { type ZipCode } from '@/types/ZipCode.ts'
 
 beforeAll(() => server.listen())
