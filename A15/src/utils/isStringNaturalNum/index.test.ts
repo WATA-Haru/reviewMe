@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import { isStringNaturalNum } from './index.ts'
 
-describe('isStringNum', () => {
+describe('isStringNaturalNum', () => {
   test('数字以外の文字(０１２a)を入れた場合falseを返すこと', () => {
     expect(isStringNaturalNum('０１２a')).toBe(false)
   })
