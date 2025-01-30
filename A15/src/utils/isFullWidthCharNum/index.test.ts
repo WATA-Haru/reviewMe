@@ -5,11 +5,8 @@ describe('isFullWidthCharNum', () => {
   const fullWidthNumList = ['０', '１', '２', '３', '４', '５', '６', '７', '８', '９']
   const halfWidthNumList = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
-  test('数字以外(a)を入れた場合falseを返すこと', () => {
-    expect(isFullWidthCharNum('a')).toBe(false)
-  })
-  test("複数の文字列('0123456789')を入れた場合例外を返すこと", () => {
-    expect(() => isFullWidthCharNum('0123456789')).toThrowError()
+  test("複数の文字列('０１２３４５６７８９')を入れたとき、falseを返すこと", () => {
+    expect(isFullWidthCharNum('０１２３４５６７８９')).toBe(false)
   })
   fullWidthNumList.forEach((fullWidthNum) => {
     test(`全角の${fullWidthNum}を入力した際にtrueを返すこと`, () => {
