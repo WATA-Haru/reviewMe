@@ -1,5 +1,5 @@
 import { isStringNaturalNum } from '@/utils/isStringNaturalNum'
-import { convertCharNumToNum } from '@/utils/convertCharNumToNum'
+import { convertCharNumToNum } from './convertCharNumToNum/index.ts'
 
 export const convertStringNumToNaturalNum = (value: string): number => {
   if (!isStringNaturalNum(value)) {
