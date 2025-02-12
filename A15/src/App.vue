@@ -1,5 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import FormContainer from '@/components/Form/container/index.vue'
+</script>
 
 <template>
-  <main></main>
+  <main>
+    <FormContainer />
+  </main>
 </template>
