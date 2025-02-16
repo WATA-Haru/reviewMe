@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 defineOptions({
   name: 'ZipCodeInputPresentational',
 })
@@ -13,10 +15,8 @@ interface Props {
   maxLengthSecond: number
 
   goFocus: boolean
-
   isInvalidCharacterUsedFirst: boolean
   isShorterThanMinLengthFirst: boolean
-
   isInvalidCharacterUsedSecond: boolean
   isShorterThanMinLengthSecond: boolean
 }
@@ -24,7 +24,6 @@ interface Emits {
   (event: 'input-first', EventElement: Readonly<InputEvent>): void
   (event: 'blur-first', EventElement: Readonly<FocusEvent>): void
   (event: 'composition-end-first', EventElement: Readonly<CompositionEvent>): void
-
   (event: 'input-second', EventElement: Readonly<InputEvent>): void
   (event: 'blur-second', EventElement: Readonly<FocusEvent>): void
   (event: 'composition-end-second', EventElement: Readonly<CompositionEvent>): void
@@ -83,9 +82,17 @@ const vFocus = {
     }
   },
 }
+
+const isSomethingError = computed(
+  () =>
+    props?.isInvalidCharacterUsedFirst ||
+    props?.isShorterThanMinLengthFirst ||
+    props?.isShorterThanMinLengthSecond ||
+    props?.isShorterThanMinLengthSecond,
+)
 </script>
 <template>
-  <div>
+  <div class="zipcode-input-wrapper">
     〒
     <input
       type="text"
@@ -107,17 +114,24 @@ const vFocus = {
       @compositionend="handleCompositionEndSecond"
       @blur="(event: Event) => handleBlurSecond(event)"
     />
-    <div v-if="props.isInvalidCharacterUsedFirst">
-      isInvalidCharacterUsedFirst(全角半角数字以外がある)
-    </div>
-    <div v-if="props.isShorterThanMinLengthFirst">
-      isShorterThanMinLengthFirst(入力文字数がMinLengthより小さい)
-    </div>
-    <div v-if="props.isInvalidCharacterUsedSecond">
-      isInvalidCharacterUsedSecond(全角半角数字以外がある)
-    </div>
-    <div v-if="props.isShorterThanMinLengthSecond">
-      isShorterThanMinLengthSecond(入力文字数がMinLengthより小さい)
+    <div v-if="isSomethingError" class="error-status">
+      <div v-if="props.isInvalidCharacterUsedFirst">
+        isInvalidCharacterUsedFirst(全角半角数字以外がある)
+      </div>
+      <div v-if="props.isShorterThanMinLengthFirst">
+        isShorterThanMinLengthFirst(入力文字数がMinLengthより小さい)
+      </div>
+      <div v-if="props.isInvalidCharacterUsedSecond">
+        isInvalidCharacterUsedSecond(全角半角数字以外がある)
+      </div>
+      <div v-if="props.isShorterThanMinLengthSecond">
+        isShorterThanMinLengthSecond(入力文字数がMinLengthより小さい)
+      </div>
     </div>
   </div>
 </template>
+<style lang="css" scoped>
+.error-status {
+  background-color: #ffa799;
+}
+</style>
