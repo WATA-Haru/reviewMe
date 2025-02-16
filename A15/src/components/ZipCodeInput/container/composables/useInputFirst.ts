@@ -59,6 +59,13 @@ export const useInputFirst = (
     }
   }
 
+  /**
+   * @description 
+   *   1. 入力欄の文字列が全角・半角数字以外の場合は、即座にエラー状態をtrueにする。
+   *   2. 文字数がminLengthと同じ場合エラー状態をfalseにする。
+   *   3. 入力値が全角・半角数字の場合はエラー状態をfalseにする。
+   *   4. minLengthのエラーは入力中ではなく、blur時に出したいのでエラー状態をtrueにする処理は行わない。
+   */
   const textRefFirstWatcher = () => {
     watch(textRefFirst, () => {
       if (isStringNaturalNum(textRefFirst.value)) {
