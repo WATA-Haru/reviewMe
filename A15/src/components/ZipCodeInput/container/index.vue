@@ -2,7 +2,7 @@
 import ZipCodeInputPresentational from '@/components/ZipCodeInput/presentational/index.vue'
 import { isStringNaturalNum } from '@/utils/isStringNaturalNum'
 import { makeFullWidthNumToHalfWidthNum } from '@/utils/makeFullWidthNumToHalfWidthNum'
-import { type Ref, ref } from 'vue'
+import { type Ref, ref, watch } from 'vue'
 
 defineOptions({
   name: 'ZipCodeInputContainer',
@@ -73,7 +73,6 @@ const handleCompositionEndFirst = (event: CompositionEvent) => {
   const textFromInput = target.value
 
   textRefFirst.value = makeFullWidthNumToHalfWidthNum(textFromInput)
-
   if (textFromInput.length === minLengthFirst && isStringNaturalNum(textFromInput)) {
     goFocusRef.value = true
   }
@@ -101,9 +100,9 @@ const handleBlurFirst = (event: FocusEvent) => {
 
   const textFromInput = target.value
 
-  if (textFromInput.length < minLengthFirst) {
-    errorStatusRef.value[0].isShorterThanMinLength = true
-  }
+  //if (textFromInput.length < minLengthFirst) {
+  //  errorStatusRef.value[0].isShorterThanMinLength = true
+  //}
 }
 
 const handleBlurSecond = (event: FocusEvent) => {
@@ -114,10 +113,36 @@ const handleBlurSecond = (event: FocusEvent) => {
 
   const textFromInput = target.value
 
-  if (textFromInput.length < minLengthFirst) {
+  //if (textFromInput.length < minLengthFirst) {
+  //  errorStatusRef.value[1].isShorterThanMinLength = true
+  //}
+}
+
+watch(textRefFirst, () => {
+  if (isStringNaturalNum(textRefFirst.value)) {
+    errorStatusRef.value[0].isInvalidCharacterUsed = false
+  } else {
+    errorStatusRef.value[0].isInvalidCharacterUsed = true
+  }
+  if (textRefFirst.value.length === minLengthFirst) {
+    errorStatusRef.value[0].isShorterThanMinLength = false
+  } else {
+    errorStatusRef.value[0].isShorterThanMinLength = true
+  }
+})
+
+watch(textRefSecond, () => {
+  if (isStringNaturalNum(textRefSecond.value)) {
+    errorStatusRef.value[1].isInvalidCharacterUsed = false
+  } else {
+    errorStatusRef.value[1].isInvalidCharacterUsed = true
+  }
+  if (textRefSecond.value.length === minLengthSecond) {
+    errorStatusRef.value[1].isShorterThanMinLength = false
+  } else {
     errorStatusRef.value[1].isShorterThanMinLength = true
   }
-}
+})
 </script>
 <template>
   <ZipCodeInputPresentational
