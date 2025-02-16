@@ -1,70 +1,123 @@
 <script setup lang="ts">
-import InputFirstHalfContainer from '@/components/InputFirstHalf/container/index.vue'
-import InputSecondHalfContainer from '@/components/InputSecondHalf/container/index.vue'
+import ZipCodeInputPresentational from '@/components/ZipCodeInput/presentational/index.vue'
+import { isStringNaturalNum } from '@/utils/isStringNaturalNum'
+import { makeFullWidthNumToHalfWidthNum } from '@/utils/makeFullWidthNumToHalfWidthNum'
 import { ref } from 'vue'
 
 defineOptions({
   name: 'ZipCodeInputContainer',
 })
 
-const isFirstInputShorter = ref(false)
-const isFirstValidateError = ref(false)
-const isSecondInputShorter = ref(false)
-const isSecondValidateError = ref(false)
-const goFocus = ref(false)
+const minLengthFirst = 3
+const maxLengthFirst = 3
+const minLengthSecond = 4
+const maxLengthSecond = 4
 
-const resetFirstStatus = () => {
-  isFirstValidateError.value = false
-  isFirstInputShorter.value = false
+const textRefFirst = ref('')
+const textRefSecond = ref('')
+
+const goFocusRef = ref(false)
+
+const resetGoFocusStatus = () => {
+  goFocusRef.value = false
 }
-const resetSecondStatus = () => {
-  isSecondValidateError.value = false
-  isSecondInputShorter.value = false
+
+/**
+ * @description - IMEが入力中の場合以外に文字を変換する。IMEが入力中かをInputEvent.isComposintで判定する
+ */
+const handleInputFirst = (event: InputEvent) => {
+  const { target } = event
+  if (!(target instanceof HTMLInputElement)) {
+    return
+  }
+  const textFromInput = target.value
+
+  if (!event.isComposing) {
+    textRefFirst.value = makeFullWidthNumToHalfWidthNum(textFromInput)
+  }
 }
-const handleFirstInputSuccess = () => {
-  resetFirstStatus()
-  goFocus.value = true
+
+/**
+ * @description - IMEが入力中の場合以外に文字を変換する。IMEが入力中かをInputEvent.isComposintで判定する
+ */
+const handleInputSecond = (event: InputEvent) => {
+  const { target } = event
+  if (!(target instanceof HTMLInputElement)) {
+    return
+  }
+  const textFromInput = target.value
+
+  if (!event.isComposing) {
+    textRefSecond.value = makeFullWidthNumToHalfWidthNum(textFromInput)
+  }
 }
-const handleFirstValidateError = () => {
-  isFirstValidateError.value = true
-  goFocus.value = false
+
+const handleCompositionEndFirst = (event: CompositionEvent) => {
+  const { target } = event
+  if (!(target instanceof HTMLInputElement)) {
+    return
+  }
+  const textFromInput = target.value
+
+  textRefFirst.value = makeFullWidthNumToHalfWidthNum(textFromInput)
+
+  console.log(textFromInput)
+  if (textFromInput.length === minLengthFirst && isStringNaturalNum(textFromInput)) {
+    goFocusRef.value = true
+  }
 }
-const handleFirstInputShorter = () => {
-  isFirstInputShorter.value = true
-  goFocus.value = false
+
+const handleCompositionEndSecond = (event: CompositionEvent) => {
+  const { target } = event
+  if (!(target instanceof HTMLInputElement)) {
+    return
+  }
+  const textFromInput = target.value
+
+  textRefSecond.value = makeFullWidthNumToHalfWidthNum(textFromInput)
 }
-const handleSecondInputSuccess = () => {
-  resetSecondStatus()
+
+const handleBlurFirst = (event: FocusEvent) => {
+  if (event) {
+    return
+  }
+  //const { target } = event
+  //if (!(target instanceof HTMLInputElement)) {
+  //  return ;
+  //}
+  //const textFromInput = target.value
+  //textRefFirst.value = makeFullWidthNumToHalfWidthNum(textFromInput)
 }
-const handleSecondValidateError = () => {
-  isSecondValidateError.value = true
-}
-const handleSecondInputShorter = () => {
-  isSecondInputShorter.value = true
+
+const handleBlurSecond = (event: FocusEvent) => {
+  if (event) {
+    return
+  }
+  //const { target } = event
+  //if (!(target instanceof HTMLInputElement)) {
+  //  return ;
+  //}
+  //const textFromInput = target.value
+  //textRefSecond.value = makeFullWidthNumToHalfWidthNum(textFromInput)
 }
 </script>
-
 <template>
-  〒
-  <InputFirstHalfContainer
-    :min-length="3"
-    :max-length="3"
-    @validate-success="handleFirstInputSuccess"
-    @validate-error="handleFirstValidateError"
-    @input-shorter="handleFirstInputShorter"
+  <ZipCodeInputPresentational
+    :text-first="textRefFirst"
+    :min-length-first="minLengthFirst"
+    :max-length-first="maxLengthFirst"
+    :is-validate-error-first="true"
+    :is-shorter-error-first="true"
+    @input-first="handleInputFirst"
+    @blur-first="handleBlurFirst"
+    @composition-end-first="handleCompositionEndFirst"
+    :go-focus="goFocusRef"
+    :text-second="textRefSecond"
+    :min-length-second="minLengthSecond"
+    :max-length-second="maxLengthSecond"
+    @input-second="handleInputSecond"
+    @blur-second="handleBlurSecond"
+    @composition-end-second="handleCompositionEndSecond"
+    @reset-go-focus-status="resetGoFocusStatus"
   />
-  -
-  <InputSecondHalfContainer
-    :go-focus="goFocus"
-    :min-length="4"
-    :max-length="4"
-    @validate-success="handleSecondInputSuccess"
-    @validate-error="handleSecondValidateError"
-    @input-shorter="handleSecondInputShorter"
-  />
-  <div v-if="isFirstInputShorter">First: isShorterError</div>
-  <div v-if="isFirstValidateError">First: isValidateError</div>
-
-  <div v-if="isSecondInputShorter">Second: isShorterError</div>
-  <div v-if="isSecondValidateError">Second: isValidateError</div>
 </template>
