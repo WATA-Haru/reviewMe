@@ -14,10 +14,11 @@ interface Props {
 
   goFocus: boolean
 
-  isValidateErrorFirst: boolean
-  isShorterErrorFirst: boolean
-  //isValidateErrorSecond: boolean
-  //isShorterErrorSecond: boolean
+  isInvalidCharacterUsedFirst: boolean
+  isShorterThanMinLengthFirst: boolean
+
+  isInvalidCharacterUsedSecond: boolean
+  isShorterThanMinLengthSecond: boolean
 }
 interface Emits {
   (event: 'input-first', EventElement: Readonly<InputEvent>): void
@@ -106,16 +107,17 @@ const vFocus = {
       @compositionend="handleCompositionEndSecond"
       @blur="(event: Event) => handleBlurSecond(event)"
     />
-    <div v-if="props.isValidateErrorFirst">isValidateErrorFirst(全角半角数字以外がある)</div>
-    <div v-if="props.isShorterErrorFirst">isShorterErrorSecond(全角半角数字以外がある)</div>
-    <!--
-    <div v-if="props.isValidateErrorSecond">
-      isValidateErrorSecond(全角半角数字以外がある)
+    <div v-if="props.isInvalidCharacterUsedFirst">
+      isInvalidCharacterUsedFirst(全角半角数字以外がある)
     </div>
-    <div v-if="props.isShorterErrorSecond">
-      isValidateErrorSecond(全角半角数字以外がある)
+    <div v-if="props.isShorterThanMinLengthFirst">
+      isShorterThanMinLengthFirst(入力文字数がMinLengthより小さい)
     </div>
-    <ErrorShow />
-    -->
+    <div v-if="props.isInvalidCharacterUsedSecond">
+      isInvalidCharacterUsedSecond(全角半角数字以外がある)
+    </div>
+    <div v-if="props.isShorterThanMinLengthSecond">
+      isShorterThanMinLengthSecond(入力文字数がMinLengthより小さい)
+    </div>
   </div>
 </template>
