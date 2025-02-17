@@ -1,10 +1,45 @@
 import { makeFullWidthNumToHalfWidthNum } from '@/utils/makeFullWidthNumToHalfWidthNum'
-import { type Ref, ref, watch } from 'vue'
-import { type ErrorStatus } from '../errorStatusType.ts'
+import { ref, watch } from 'vue'
 import { isStringNaturalNum } from '@/utils/isStringNaturalNum/index.ts'
 
-export const useInputSecond = (minLengthSecond: number, errorStatusRef: Ref<ErrorStatus[]>) => {
+interface ErrorState {
+  tooShort: boolean
+  invalid: boolean
+}
+
+const useErrorSecond = () => {
+  const errorRefSecond = ref<ErrorState>({
+    tooShort: false,
+    invalid: false,
+  })
+
+  const setTooShortError = (value: boolean) => {
+    errorRefSecond.value.tooShort = value
+  }
+
+  const setInvalidError = (value: boolean) => {
+    errorRefSecond.value.invalid = value
+  }
+
+  const markShort = () => setTooShortError(true)
+  const unmarkShort = () => setTooShortError(false)
+  const markInvalid = () => setInvalidError(true)
+  const unmarkInvalid = () => setInvalidError(false)
+
+  return {
+    errorRefSecond,
+    markShort,
+    unmarkShort,
+    unmarkInvalid,
+    markInvalid,
+  }
+}
+
+export const useInputSecond = (minLengthSecond: number) => {
   const textRefSecond = ref('')
+
+  const { errorRefSecond, markShort, unmarkShort, unmarkInvalid, markInvalid } = useErrorSecond()
+
   /**
    * @description - IMEが入力中の場合以外に文字を変換する。IMEが入力中かをInputEvent.isComposintで判定する
    */
@@ -39,12 +74,12 @@ export const useInputSecond = (minLengthSecond: number, errorStatusRef: Ref<Erro
     const textFromInput = target.value
 
     if (textFromInput.length < minLengthSecond) {
-      errorStatusRef.value[1].isShorterThanMinLength = true
+      markShort()
     }
   }
 
   /**
-   * @description 
+   * @description
    *   1. 入力欄の文字列が全角・半角数字以外の場合は、即座にエラー状態をtrueにする。
    *   2. 文字数がminLengthと同じ場合エラー状態をfalseにする。
    *   3. 入力値が全角・半角数字の場合はエラー状態をfalseにする。
@@ -53,18 +88,19 @@ export const useInputSecond = (minLengthSecond: number, errorStatusRef: Ref<Erro
   const textRefSecondWatcher = () => {
     watch(textRefSecond, () => {
       if (isStringNaturalNum(textRefSecond.value)) {
-        errorStatusRef.value[1].isInvalidCharacterUsed = false
+        unmarkInvalid()
       } else {
-        errorStatusRef.value[1].isInvalidCharacterUsed = true
+        markInvalid()
       }
       if (textRefSecond.value.length === minLengthSecond) {
-        errorStatusRef.value[1].isShorterThanMinLength = false
+        unmarkShort()
       }
     })
   }
 
   return {
     textRefSecond,
+    errorRefSecond,
     handleInputSecond,
     handleCompositionEndSecond,
     handleBlurSecond,

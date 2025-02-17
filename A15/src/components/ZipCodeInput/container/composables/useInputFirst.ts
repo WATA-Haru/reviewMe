@@ -1,14 +1,63 @@
 import { isStringNaturalNum } from '@/utils/isStringNaturalNum'
 import { makeFullWidthNumToHalfWidthNum } from '@/utils/makeFullWidthNumToHalfWidthNum'
-import { type Ref, ref, watch } from 'vue'
-import { type ErrorStatus } from '../errorStatusType.ts'
+import { ref, watch } from 'vue'
 
-export const useInputFirst = (
-  minLengthFirst: number,
-  errorStatusRef: Ref<ErrorStatus[]>,
-  goFocusRef: Ref<boolean>,
-) => {
+interface ErrorState {
+  tooShort: boolean
+  invalid: boolean
+}
+
+const useGoFocus = () => {
+  const goFocusRef = ref(false)
+
+  const activateGoFocus = () => {
+    goFocusRef.value = true
+  }
+
+  const deactivateGoFocus = () => {
+    goFocusRef.value = false
+  }
+
+  return {
+    goFocusRef,
+    activateGoFocus,
+    deactivateGoFocus,
+  }
+}
+
+const useErrorFirst = () => {
+  const errorRefFirst = ref<ErrorState>({
+    tooShort: false,
+    invalid: false,
+  })
+
+  const setTooShortError = (value: boolean) => {
+    errorRefFirst.value.tooShort = value
+  }
+
+  const setInvalidError = (value: boolean) => {
+    errorRefFirst.value.invalid = value
+  }
+
+  const markShort = () => setTooShortError(true)
+  const unmarkShort = () => setTooShortError(false)
+  const markInvalid = () => setInvalidError(true)
+  const unmarkInvalid = () => setInvalidError(false)
+
+  return {
+    errorRefFirst,
+    markShort,
+    unmarkShort,
+    unmarkInvalid,
+    markInvalid,
+  }
+}
+
+export const useInputFirst = (minLengthFirst: number) => {
   const textRefFirst = ref('')
+
+  const { goFocusRef, activateGoFocus, deactivateGoFocus } = useGoFocus()
+  const { errorRefFirst, markShort, unmarkShort, markInvalid, unmarkInvalid } = useErrorFirst()
 
   /**
    * @description - IMEが入力中の場合以外に文字を変換する。IMEが入力中かをInputEvent.isComposintで判定する
@@ -26,7 +75,7 @@ export const useInputFirst = (
 
     // IMEでない入力の場合、inputのタイミングでfocusイベントを処理
     if (textRefFirst.value.length === minLengthFirst && isStringNaturalNum(textRefFirst.value)) {
-      goFocusRef.value = true
+      activateGoFocus()
     }
   }
 
@@ -39,7 +88,7 @@ export const useInputFirst = (
 
     textRefFirst.value = makeFullWidthNumToHalfWidthNum(textFromInput)
     if (textFromInput.length === minLengthFirst && isStringNaturalNum(textFromInput)) {
-      goFocusRef.value = true
+      activateGoFocus()
     }
   }
   /**
@@ -55,12 +104,12 @@ export const useInputFirst = (
     const textFromInput = target.value
 
     if (textFromInput.length < minLengthFirst) {
-      errorStatusRef.value[0].isShorterThanMinLength = true
+      markShort()
     }
   }
 
   /**
-   * @description 
+   * @description
    *   1. 入力欄の文字列が全角・半角数字以外の場合は、即座にエラー状態をtrueにする。
    *   2. 文字数がminLengthと同じ場合エラー状態をfalseにする。
    *   3. 入力値が全角・半角数字の場合はエラー状態をfalseにする。
@@ -69,18 +118,21 @@ export const useInputFirst = (
   const textRefFirstWatcher = () => {
     watch(textRefFirst, () => {
       if (isStringNaturalNum(textRefFirst.value)) {
-        errorStatusRef.value[0].isInvalidCharacterUsed = false
+        unmarkInvalid()
       } else {
-        errorStatusRef.value[0].isInvalidCharacterUsed = true
+        markInvalid()
       }
       if (textRefFirst.value.length === minLengthFirst) {
-        errorStatusRef.value[0].isShorterThanMinLength = false
+        unmarkShort()
       }
     })
   }
 
   return {
+    goFocusRef,
     textRefFirst,
+    errorRefFirst,
+    deactivateGoFocus,
     handleInputFirst,
     handleCompositionEndFirst,
     handleBlurFirst,
