@@ -25,6 +25,27 @@ const useGoFocus = () => {
   }
 }
 
+if (import.meta.vitest) {
+  const { describe, test, expect } = import.meta.vitest
+
+  describe('useGoFocus', () => {
+    test('goFocusRefの初期値がfalseであること', () => {
+      const { goFocusRef } = useGoFocus()
+      expect(goFocusRef.value).toBe(false)
+    })
+    test('activateGoFocusを実行することでgoFocusRefがtrueになること', () => {
+      const { goFocusRef, activateGoFocus } = useGoFocus()
+      activateGoFocus()
+      expect(goFocusRef.value).toBe(true)
+    })
+    test('deactivateGoFocusを実行することでgoFocusRefがfalseになること', () => {
+      const { goFocusRef, deactivateGoFocus } = useGoFocus()
+      deactivateGoFocus()
+      expect(goFocusRef.value).toBe(false)
+    })
+  })
+}
+
 const useErrorFirst = () => {
   const errorRefFirst = ref<ErrorState>({
     tooShort: false,
@@ -51,6 +72,37 @@ const useErrorFirst = () => {
     unmarkInvalid,
     markInvalid,
   }
+}
+
+if (import.meta.vitest) {
+  const { describe, test, expect } = import.meta.vitest
+  describe('useErrorFirst', () => {
+    test('errorRefFirstのプロパティの初期値がfalseであること', () => {
+      const { errorRefFirst } = useErrorFirst()
+      expect(errorRefFirst.value.tooShort).toBe(false)
+      expect(errorRefFirst.value.invalid).toBe(false)
+    })
+    test('markShortを実行することでerrorRefFirst.value.tooShortがtrueになること', () => {
+      const { errorRefFirst, markShort } = useErrorFirst()
+      markShort()
+      expect(errorRefFirst.value.tooShort).toBe(true)
+    })
+    test('unmarkShortを実行することでerrorRefFirst.value.tooShortがfalseになること', () => {
+      const { errorRefFirst, unmarkShort } = useErrorFirst()
+      unmarkShort()
+      expect(errorRefFirst.value.tooShort).toBe(false)
+    })
+    test('markInvalidを実行することでerrorRefFirst.value.invalidがtrueになること', () => {
+      const { errorRefFirst, markInvalid } = useErrorFirst()
+      markInvalid()
+      expect(errorRefFirst.value.invalid).toBe(true)
+    })
+    test('unmarkInvalidを実行することでerrorRefFirst.value.invalidがfalseになること', () => {
+      const { errorRefFirst, unmarkInvalid } = useErrorFirst()
+      unmarkInvalid()
+      expect(errorRefFirst.value.invalid).toBe(false)
+    })
+  })
 }
 
 export const useInputFirst = (minLengthFirst: number) => {
