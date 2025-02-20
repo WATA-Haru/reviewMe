@@ -112,19 +112,23 @@ export const useInputFirst = (minLengthFirst: number) => {
   const { errorRefFirst, markShort, unmarkShort, markInvalid, unmarkInvalid } = useErrorFirst()
 
   /**
-   * @description - IMEが入力中の場合以外に文字を変換する。IMEが入力中かをInputEvent.isComposintで判定する
+   * @description - IMEが入力中の場合以外に文字を変換する。IMEが入力中かをInputEvent.isComposintで判定する。InputとCompositionの両方でfocusイベントを扱う理由は、IMEを伴う入力確定はisComposingで発行できるが、IMEを伴わない普通の英数字入力の場合はInput属性のisComposingを用いないと入力確定がチェックできないからだ。
    */
   const handleInputFirst = (event: InputEvent) => {
     const { target } = event
+
+    if (event.isComposing) {
+      return
+    }
     if (!(target instanceof HTMLInputElement)) {
       return
     }
+
     const textFromInput = target.value
 
     if (!event.isComposing) {
       textRefFirst.value = makeFullWidthNumToHalfWidthNum(textFromInput)
     }
-
     // IMEでない入力の場合、inputのタイミングでfocusイベントを処理
     if (textRefFirst.value.length === minLengthFirst && isStringNaturalNum(textRefFirst.value)) {
       activateGoFocus()
