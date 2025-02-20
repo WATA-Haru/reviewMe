@@ -76,6 +76,9 @@ export const useInputSecond = (minLengthSecond: number) => {
    */
   const handleInputSecond = (event: InputEvent) => {
     const { target } = event
+    if (event.isComposing) {
+      return
+    }
     if (!(target instanceof HTMLInputElement)) {
       return
     }
