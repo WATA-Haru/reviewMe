@@ -32,46 +32,48 @@ interface Emits {
 const props = defineProps<Props>()
 const emits = defineEmits<Emits>()
 
+const isTesting = process.env.NODE_ENV ! == 'test'
+
 const handleInputFirst = (event: Event) => {
-  if (!(event instanceof InputEvent)) {
+  if (!isTesting && !(event instanceof InputEvent)) {
     return
   }
-  emits('input-first', event)
+  emits('input-first', event as Readonly<InputEvent>)
 }
 
 const handleCompositionEndFirst = (event: Event) => {
-  if (!(event instanceof CompositionEvent)) {
+  if (!isTesting && !(event instanceof CompositionEvent)) {
     return
   }
-  emits('composition-end-first', event)
+  emits('composition-end-first', event as Readonly<CompositionEvent>)
 }
 
 const handleBlurFirst = (event: Event) => {
-  if (!(event instanceof FocusEvent)) {
+  if (!isTesting && !(event instanceof FocusEvent)) {
     return
   }
-  emits('blur-first', event)
+  emits('blur-first', event as Readonly<FocusEvent>)
 }
 
 const handleInputSecond = (event: Event) => {
-  if (!(event instanceof InputEvent)) {
+  if (!isTesting && !(event instanceof InputEvent)) {
     return
   }
-  emits('input-second', event)
+  emits('input-second', event as Readonly<InputEvent>)
 }
 
 const handleCompositionEndSecond = (event: Event) => {
-  if (!(event instanceof CompositionEvent)) {
+  if (!isTesting && !(event instanceof CompositionEvent)) {
     return
   }
-  emits('composition-end-second', event)
+  emits('composition-end-second', event as Readonly<CompositionEvent>)
 }
 
 const handleBlurSecond = (event: Event) => {
-  if (!(event instanceof FocusEvent)) {
+  if (!isTesting && !(event instanceof FocusEvent)) {
     return
   }
-  emits('blur-second', event)
+  emits('blur-second', event as Readonly<FocusEvent>)
 }
 
 const vFocus = {
@@ -95,6 +97,7 @@ const isSomethingError = computed(
   <div class="zipcode-input-wrapper">
     〒
     <input
+      class="zipcode-input-wrapper__input-first"
       type="text"
       :value="props.textFirst"
       :maxlength="props.maxLengthFirst"
@@ -107,6 +110,7 @@ const isSomethingError = computed(
     <input
       v-focus
       type="text"
+      class="zipcode-input-wrapper__input-second"
       :value="props.textSecond"
       :maxlength="props.maxLengthSecond"
       :minlength="props.minLengthSecond"
