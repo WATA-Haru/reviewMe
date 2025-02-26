@@ -27,7 +27,7 @@ interface Emits {
   (event: 'input-second', EventElement: Readonly<InputEvent>): void
   (event: 'blur-second', EventElement: Readonly<FocusEvent>): void
   (event: 'composition-end-second', EventElement: Readonly<CompositionEvent>): void
-  (event: 'resetGoFocusStatus'): void
+  (event: 'reset-go-focus-status'): void
 }
 const props = defineProps<Props>()
 const emits = defineEmits<Emits>()
@@ -78,7 +78,7 @@ const vFocus = {
   updated: (el: HTMLElement) => {
     if (el instanceof HTMLInputElement && props?.goFocus) {
       el.focus()
-      emits('resetGoFocusStatus')
+      emits('reset-go-focus-status')
     }
   },
 }
