@@ -32,7 +32,7 @@ interface Emits {
 const props = defineProps<Props>()
 const emits = defineEmits<Emits>()
 
-const isTesting = process.env.NODE_ENV !== 'test'
+const isTesting = process.env.NODE_ENV === 'test'
 
 const handleInputFirst = (event: Event) => {
   if (!isTesting && !(event instanceof InputEvent)) {
