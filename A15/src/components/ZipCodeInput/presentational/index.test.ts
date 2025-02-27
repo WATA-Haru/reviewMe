@@ -21,7 +21,7 @@ interface Props {
 
 describe('ZipCodeInputPresentational Events', () => {
   // 共通の props を定義
-  const defaultProps:Props = {
+  const defaultProps: Props = {
     textFirst: '',
     minLengthFirst: 3,
     maxLengthFirst: 3,
@@ -78,9 +78,45 @@ describe('ZipCodeInputPresentational Events', () => {
   })
 
   test('reset-go-focus-status: goFocus が true になったとき、vFocus ディレクティブによりイベントが発行されること', async () => {
-    const wrapper = mount(ZipCodeInputPresentational, { props: { ...defaultProps, goFocus: false } })
+    const wrapper = mount(ZipCodeInputPresentational, {
+      props: { ...defaultProps, goFocus: false },
+    })
     // updatedの呼び出しを期待
     await wrapper.setProps({ goFocus: true })
     expect(wrapper.emitted()).toHaveProperty('reset-go-focus-status')
+  })
+})
+
+describe('ZipCodeInputPresentational Propsのレンダリング', () => {
+  const defaultProps: Props = {
+    textFirst: '',
+    minLengthFirst: 3,
+    maxLengthFirst: 3,
+    textSecond: '',
+    minLengthSecond: 4,
+    maxLengthSecond: 4,
+    goFocus: false,
+    isInvalidCharacterUsedFirst: false,
+    isShorterThanMinLengthFirst: false,
+    isInvalidCharacterUsedSecond: false,
+    isShorterThanMinLengthSecond: false,
+  }
+
+  test('textFirstにpropsが渡されたとき、input要素にpropsで受け取った値が描画されること', () => {
+    const wrapper = mount(ZipCodeInputPresentational, {
+      props: { ...defaultProps, textFirst: '123' },
+    })
+    const inputField: HTMLInputElement = wrapper.find('.zipcode-input-wrapper__input-first')
+      .element as HTMLInputElement
+    expect(inputField.value).toBe('123')
+  })
+
+  test('textSecondにpropsが渡されたとき、input要素にpropsで受け取った値が描画されること', () => {
+    const wrapper = mount(ZipCodeInputPresentational, {
+      props: { ...defaultProps, textSecond: '123' },
+    })
+    const inputField: HTMLInputElement = wrapper.find('.zipcode-input-wrapper__input-second')
+      .element as HTMLInputElement
+    expect(inputField.value).toBe('123')
   })
 })
