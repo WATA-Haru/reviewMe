@@ -89,7 +89,7 @@ const isSomethingError = computed(
   () =>
     props?.isInvalidCharacterUsedFirst ||
     props?.isShorterThanMinLengthFirst ||
-    props?.isShorterThanMinLengthSecond ||
+    props?.isInvalidCharacterUsedSecond ||
     props?.isShorterThanMinLengthSecond,
 )
 </script>
