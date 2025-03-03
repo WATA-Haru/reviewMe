@@ -120,3 +120,71 @@ describe('ZipCodeInputPresentational Propsのレンダリング', () => {
     expect(inputField.value).toBe('123')
   })
 })
+
+describe('Propsで渡されたエラーによって要素を描画するテスト', () => {
+  const errorClassName = 'error-status'
+  const defaultProps: Props = {
+    textFirst: '',
+    minLengthFirst: 3,
+    maxLengthFirst: 3,
+    textSecond: '',
+    minLengthSecond: 4,
+    maxLengthSecond: 4,
+    goFocus: false,
+    isInvalidCharacterUsedFirst: false,
+    isShorterThanMinLengthFirst: false,
+    isInvalidCharacterUsedSecond: false,
+    isShorterThanMinLengthSecond: false,
+  }
+  test('1つもエラーのpropsを受け取っていない場合、エラーのラッパークラスが描画されないこと', () => {
+    const wrapper = mount(ZipCodeInputPresentational, {
+      props: defaultProps,
+    })
+    const errorField = wrapper.find(`.${errorClassName}`)
+    expect(errorField.exists()).toBe(false)
+  })
+
+  test('1つ以上エラーのpropsを受け取っている場合、エラーのラッパークラスが描画されること', () => {
+    const wrapper = mount(ZipCodeInputPresentational, {
+      props: { ...defaultProps, isInvalidCharacterUsedSecond: true },
+    })
+    const errorField = wrapper.find(`.${errorClassName}`)
+    expect(errorField.exists()).toBe(true)
+  })
+
+  test('input1: 全角半角数字以外のエラーを表すpropsがある場合、そのエラーを描画すること', () => {
+    const wrapper = mount(ZipCodeInputPresentational, {
+      props: { ...defaultProps, isInvalidCharacterUsedFirst: true },
+    })
+    const errorField = wrapper.find(`.${errorClassName}`)
+    expect(errorField.text()).toContain('isInvalidCharacterUsedFirst(全角半角数字以外がある)')
+  })
+
+  test('input1: 全角半角数字以外のエラーを表すpropsがある場合、そのエラーを描画すること', () => {
+    const wrapper = mount(ZipCodeInputPresentational, {
+      props: { ...defaultProps, isShorterThanMinLengthFirst: true },
+    })
+    const errorField = wrapper.find(`.${errorClassName}`)
+    expect(errorField.text()).toContain(
+      'isShorterThanMinLengthFirst(入力文字数がMinLengthより小さい)',
+    )
+  })
+
+  test('input2: 全角半角数字以外のエラーを表すpropsがある場合、そのエラーを描画すること', () => {
+    const wrapper = mount(ZipCodeInputPresentational, {
+      props: { ...defaultProps, isInvalidCharacterUsedSecond: true },
+    })
+    const errorField = wrapper.find(`.${errorClassName}`)
+    expect(errorField.text()).toContain('isInvalidCharacterUsedSecond(全角半角数字以外がある)')
+  })
+
+  test('input2: 全角半角数字以外のエラーを表すpropsがある場合、そのエラーを描画すること', () => {
+    const wrapper = mount(ZipCodeInputPresentational, {
+      props: { ...defaultProps, isShorterThanMinLengthSecond: true },
+    })
+    const errorField = wrapper.find(`.${errorClassName}`)
+    expect(errorField.text()).toContain(
+      'isShorterThanMinLengthSecond(入力文字数がMinLengthより小さい)',
+    )
+  })
+})
