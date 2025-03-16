@@ -21,59 +21,39 @@ interface Props {
   isShorterThanMinLengthSecond: boolean
 }
 interface Emits {
-  (event: 'input-first', EventElement: Readonly<InputEvent>): void
-  (event: 'blur-first', EventElement: Readonly<FocusEvent>): void
-  (event: 'composition-end-first', EventElement: Readonly<CompositionEvent>): void
-  (event: 'input-second', EventElement: Readonly<InputEvent>): void
-  (event: 'blur-second', EventElement: Readonly<FocusEvent>): void
-  (event: 'composition-end-second', EventElement: Readonly<CompositionEvent>): void
-  (event: 'reset-go-focus-status'): void
+  (eventName: 'input-first', event: Event): void
+  (eventName: 'blur-first', event: Event): void
+  (eventName: 'composition-end-first', event: Event): void
+  (eventName: 'input-second', event: Event): void
+  (eventName: 'blur-second', event: Event): void
+  (eventName: 'composition-end-second', event: Event): void
+  (eventName: 'reset-go-focus-status'): void
 }
 const props = defineProps<Props>()
 const emits = defineEmits<Emits>()
 
-const isTesting = process.env.NODE_ENV === 'test'
-
 const handleInputFirst = (event: Event) => {
-  if (!isTesting && !(event instanceof InputEvent)) {
-    return
-  }
-  emits('input-first', event as Readonly<InputEvent>)
+  emits('input-first', event)
 }
 
 const handleCompositionEndFirst = (event: Event) => {
-  if (!isTesting && !(event instanceof CompositionEvent)) {
-    return
-  }
-  emits('composition-end-first', event as Readonly<CompositionEvent>)
+  emits('composition-end-first', event)
 }
 
 const handleBlurFirst = (event: Event) => {
-  if (!isTesting && !(event instanceof FocusEvent)) {
-    return
-  }
-  emits('blur-first', event as Readonly<FocusEvent>)
+  emits('blur-first', event)
 }
 
 const handleInputSecond = (event: Event) => {
-  if (!isTesting && !(event instanceof InputEvent)) {
-    return
-  }
-  emits('input-second', event as Readonly<InputEvent>)
+  emits('input-second', event)
 }
 
 const handleCompositionEndSecond = (event: Event) => {
-  if (!isTesting && !(event instanceof CompositionEvent)) {
-    return
-  }
-  emits('composition-end-second', event as Readonly<CompositionEvent>)
+  emits('composition-end-second', event)
 }
 
 const handleBlurSecond = (event: Event) => {
-  if (!isTesting && !(event instanceof FocusEvent)) {
-    return
-  }
-  emits('blur-second', event as Readonly<FocusEvent>)
+  emits('blur-second', event)
 }
 
 const vFocus = {
@@ -98,6 +78,7 @@ const isSomethingError = computed(
     〒
     <input
       class="zipcode-input-wrapper__input-first"
+      data-testid="input-first"
       type="text"
       :value="props.textFirst"
       :maxlength="props.maxLengthFirst"
@@ -111,6 +92,7 @@ const isSomethingError = computed(
       v-focus
       type="text"
       class="zipcode-input-wrapper__input-second"
+      data-testid="input-second"
       :value="props.textSecond"
       :maxlength="props.maxLengthSecond"
       :minlength="props.minLengthSecond"
@@ -118,7 +100,7 @@ const isSomethingError = computed(
       @compositionend="handleCompositionEndSecond"
       @blur="(event: Event) => handleBlurSecond(event)"
     />
-    <div v-if="isSomethingError" class="error-status">
+    <div v-if="isSomethingError" class="error-status" data-testid="error-status">
       <div v-if="props.isInvalidCharacterUsedFirst">
         isInvalidCharacterUsedFirst(全角半角数字以外がある)
       </div>
