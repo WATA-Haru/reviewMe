@@ -1,71 +1,25 @@
 import { makeFullWidthNumToHalfWidthNum } from '@/utils/makeFullWidthNumToHalfWidthNum'
 import { ref, watch } from 'vue'
 import { isStringNaturalNum } from '@/utils/isStringNaturalNum/index.ts'
+import { useErrorSecond } from './composables/useErrorSecond'
 
-interface ErrorState {
-  tooShort: boolean
-  invalid: boolean
-}
-
-const useErrorSecond = () => {
-  const errorRefSecond = ref<ErrorState>({
-    tooShort: false,
-    invalid: false,
-  })
-
-  const setTooShortError = (value: boolean) => {
-    errorRefSecond.value.tooShort = value
-  }
-
-  const setInvalidError = (value: boolean) => {
-    errorRefSecond.value.invalid = value
-  }
-
-  const markShort = () => setTooShortError(true)
-  const unmarkShort = () => setTooShortError(false)
-  const markInvalid = () => setInvalidError(true)
-  const unmarkInvalid = () => setInvalidError(false)
-
-  return {
-    errorRefSecond,
-    markShort,
-    unmarkShort,
-    unmarkInvalid,
-    markInvalid,
-  }
-}
-
-if (import.meta.vitest) {
-  const { describe, test, expect } = import.meta.vitest
-  describe('useErrorSecond', () => {
-    test('errorRefSecondのプロパティの初期値がfalseであること', () => {
-      const { errorRefSecond } = useErrorSecond()
-      expect(errorRefSecond.value.tooShort).toBe(false)
-      expect(errorRefSecond.value.invalid).toBe(false)
-    })
-    test('markShortを実行することでerrorRefSecond.value.tooShortがtrueになること', () => {
-      const { errorRefSecond, markShort } = useErrorSecond()
-      markShort()
-      expect(errorRefSecond.value.tooShort).toBe(true)
-    })
-    test('unmarkShortを実行することでerrorRefSecond.value.tooShortがfalseになること', () => {
-      const { errorRefSecond, unmarkShort } = useErrorSecond()
-      unmarkShort()
-      expect(errorRefSecond.value.tooShort).toBe(false)
-    })
-    test('markInvalidを実行することでerrorRefSecond.value.invalidがtrueになること', () => {
-      const { errorRefSecond, markInvalid } = useErrorSecond()
-      markInvalid()
-      expect(errorRefSecond.value.invalid).toBe(true)
-    })
-    test('unmarkInvalidを実行することでerrorRefSecond.value.invalidがfalseになること', () => {
-      const { errorRefSecond, unmarkInvalid } = useErrorSecond()
-      unmarkInvalid()
-      expect(errorRefSecond.value.invalid).toBe(false)
-    })
-  })
-}
-
+/**
+ * @description
+ * ### 1. テキストを保持し全角数字を半角数字に変換する
+ * textRefSecondで入力テキストを保持する。
+ *
+ * テキスト変換に関連する関数
+ * - handleInputSecond: 入力中(isComposing)ではない場合に全角数字を半角数字に変換
+ * - handleCompositionEndSecond: IMEの入力確定時に全角数字を半角数字に変換
+ *
+ * ### 2. 入力によりエラー状態を切り替える
+ * errorRefSecondでエラー状態を保持する。
+ *
+ * エラー状態の切り替えに関連する関数
+ * - handleBlurSecond: blur時に文字列の長さが最小文字列より小さい場合に「文字列の長さのエラー」を有効化
+ * - textRefSecondWatcher: テキストを保持するrefを監視し、全角・半角数字以外ならば「入力が不正のエラー」を有効化 / 文字列の長さを満たしている場合に「文字列の長さのエラー」を無効化
+ *
+ */
 export const useInputSecond = (minLengthSecond: number) => {
   const textRefSecond = ref('')
 
@@ -132,12 +86,13 @@ export const useInputSecond = (minLengthSecond: number) => {
     })
   }
 
+  textRefSecondWatcher()
+
   return {
     textRefSecond,
     errorRefSecond,
     handleInputSecond,
     handleCompositionEndSecond,
     handleBlurSecond,
-    textRefSecondWatcher,
   }
 }
