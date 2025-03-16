@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ZipCodeInputPresentational from '@/components/ZipCodeInput/presentational/index.vue'
-import { useInputFirst } from './composables/useInputFirst.ts'
-import { useInputSecond } from './composables/useInputSecond.ts'
+import { useInputFirst } from './composables/useInputFirst/index.ts'
+import { useInputSecond } from './composables/useInputSecond/index.ts'
 
 defineOptions({
   name: 'ZipCodeInputContainer',
@@ -19,7 +19,6 @@ const {
   handleInputFirst,
   handleCompositionEndFirst,
   handleBlurFirst,
-  textRefFirstWatcher,
 } = useInputFirst(minLengthFirst)
 const {
   textRefSecond,
@@ -27,11 +26,7 @@ const {
   handleInputSecond,
   handleCompositionEndSecond,
   handleBlurSecond,
-  textRefSecondWatcher,
 } = useInputSecond(minLengthSecond)
-
-textRefFirstWatcher()
-textRefSecondWatcher()
 </script>
 <template>
   <ZipCodeInputPresentational
