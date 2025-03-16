@@ -1,110 +1,34 @@
 import { isStringNaturalNum } from '@/utils/isStringNaturalNum'
 import { makeFullWidthNumToHalfWidthNum } from '@/utils/makeFullWidthNumToHalfWidthNum'
+import { useGoFocus } from './composables/useGoFocus/index.ts'
+import { useErrorFirst } from './composables/useErrorFirst/index.ts'
 import { ref, watch } from 'vue'
 
-interface ErrorState {
-  tooShort: boolean
-  invalid: boolean
-}
-
-const useGoFocus = () => {
-  const goFocusRef = ref(false)
-
-  const activateGoFocus = () => {
-    goFocusRef.value = true
-  }
-
-  const deactivateGoFocus = () => {
-    goFocusRef.value = false
-  }
-
-  return {
-    goFocusRef,
-    activateGoFocus,
-    deactivateGoFocus,
-  }
-}
-
-if (import.meta.vitest) {
-  const { describe, test, expect } = import.meta.vitest
-
-  describe('useGoFocus', () => {
-    test('goFocusRefの初期値がfalseであること', () => {
-      const { goFocusRef } = useGoFocus()
-      expect(goFocusRef.value).toBe(false)
-    })
-    test('activateGoFocusを実行することでgoFocusRefがtrueになること', () => {
-      const { goFocusRef, activateGoFocus } = useGoFocus()
-      activateGoFocus()
-      expect(goFocusRef.value).toBe(true)
-    })
-    test('deactivateGoFocusを実行することでgoFocusRefがfalseになること', () => {
-      const { goFocusRef, deactivateGoFocus } = useGoFocus()
-      deactivateGoFocus()
-      expect(goFocusRef.value).toBe(false)
-    })
-  })
-}
-
-const useErrorFirst = () => {
-  const errorRefFirst = ref<ErrorState>({
-    tooShort: false,
-    invalid: false,
-  })
-
-  const setTooShortError = (value: boolean) => {
-    errorRefFirst.value.tooShort = value
-  }
-
-  const setInvalidError = (value: boolean) => {
-    errorRefFirst.value.invalid = value
-  }
-
-  const markShort = () => setTooShortError(true)
-  const unmarkShort = () => setTooShortError(false)
-  const markInvalid = () => setInvalidError(true)
-  const unmarkInvalid = () => setInvalidError(false)
-
-  return {
-    errorRefFirst,
-    markShort,
-    unmarkShort,
-    unmarkInvalid,
-    markInvalid,
-  }
-}
-
-if (import.meta.vitest) {
-  const { describe, test, expect } = import.meta.vitest
-  describe('useErrorFirst', () => {
-    test('errorRefFirstのプロパティの初期値がfalseであること', () => {
-      const { errorRefFirst } = useErrorFirst()
-      expect(errorRefFirst.value.tooShort).toBe(false)
-      expect(errorRefFirst.value.invalid).toBe(false)
-    })
-    test('markShortを実行することでerrorRefFirst.value.tooShortがtrueになること', () => {
-      const { errorRefFirst, markShort } = useErrorFirst()
-      markShort()
-      expect(errorRefFirst.value.tooShort).toBe(true)
-    })
-    test('unmarkShortを実行することでerrorRefFirst.value.tooShortがfalseになること', () => {
-      const { errorRefFirst, unmarkShort } = useErrorFirst()
-      unmarkShort()
-      expect(errorRefFirst.value.tooShort).toBe(false)
-    })
-    test('markInvalidを実行することでerrorRefFirst.value.invalidがtrueになること', () => {
-      const { errorRefFirst, markInvalid } = useErrorFirst()
-      markInvalid()
-      expect(errorRefFirst.value.invalid).toBe(true)
-    })
-    test('unmarkInvalidを実行することでerrorRefFirst.value.invalidがfalseになること', () => {
-      const { errorRefFirst, unmarkInvalid } = useErrorFirst()
-      unmarkInvalid()
-      expect(errorRefFirst.value.invalid).toBe(false)
-    })
-  })
-}
-
+/**
+ * @description
+ * ### 1. テキストを保持し全角数字を半角数字に変換する
+ * textRefFirstで入力テキストを保持する。
+ *
+ * テキスト変換に関連する関数
+ * - handleInputFirst: 入力中(isComposing)ではない場合に全角数字を半角数字に変換
+ * - handleCompositionEndFirst: IMEの入力確定時に全角数字を半角数字に変換
+ *
+ * ### 2. 入力によりエラー状態を切り替える
+ * errorRefFirstでエラー状態を保持する。
+ *
+ * エラー状態の切り替えに関連する関数
+ * - handleBlurFirst: blur時に文字列の長さが最小文字列より小さい場合に「文字列の長さのエラー」を有効化
+ * - textRefFirstWatcher: テキストを保持するrefを監視し、全角・半角数字以外ならば「入力が不正のエラー」を有効化 / 文字列の長さを満たしている場合に「文字列の長さのエラー」を無効化
+ *
+ * ### 3. 入力が正しい場合にfocus移動の状態を切り替える
+ * goFocusRefでfocusの状態を保持する。
+ *
+ * focus状態の切り替えに関連する関数
+ * - deactivateGoFocus: focusの状態を無効化する
+ * - handleInputFirst: 文字列変換後に入力値のエラーがない場合、focusの状態を有効化する
+ * - handleCompositionEndFirst: モズ列返還後に入力値のエラーがない場合、focusの状態を有効化する
+ *
+ */
 export const useInputFirst = (minLengthFirst: number) => {
   const textRefFirst = ref('')
 
@@ -184,6 +108,8 @@ export const useInputFirst = (minLengthFirst: number) => {
     })
   }
 
+  textRefFirstWatcher()
+
   return {
     goFocusRef,
     textRefFirst,
@@ -192,6 +118,5 @@ export const useInputFirst = (minLengthFirst: number) => {
     handleInputFirst,
     handleCompositionEndFirst,
     handleBlurFirst,
-    textRefFirstWatcher,
   }
 }
