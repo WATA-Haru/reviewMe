@@ -1,7 +1,6 @@
 import { mount } from '@vue/test-utils'
 import ZipCodeInputPresentational from './index.vue'
-import { test, expect } from 'vitest'
-import { describe } from 'node:test'
+import { describe, test, expect } from 'vitest'
 
 interface Props {
   textFirst: string
@@ -19,7 +18,7 @@ interface Props {
   isShorterThanMinLengthSecond: boolean
 }
 
-describe('ZipCodeInputPresentational Events', () => {
+describe('ZipCodeInputPresentationalイベントのテスト', () => {
   // 共通の props を定義
   const defaultProps: Props = {
     textFirst: '',
@@ -34,50 +33,45 @@ describe('ZipCodeInputPresentational Events', () => {
     isInvalidCharacterUsedSecond: false,
     isShorterThanMinLengthSecond: false,
   }
-
-  test('input-first: first input に値がセットされたとき、イベントが発行されること', async () => {
+  test('入力欄1でinputイベントが発生した場合、input-firstイベントが発火すること', () => {
     const wrapper = mount(ZipCodeInputPresentational, { props: defaultProps })
-    const inputFirst = wrapper.find('.zipcode-input-wrapper__input-first')
-    await inputFirst.setValue('123')
-    expect(wrapper.emitted()).toHaveProperty('input-first')
+    const inputFirst = wrapper.findByTestId('input-first')
+    inputFirst.trigger('input')
+    expect(wrapper.emitted('input-first')?.length).toBe(1)
+  })
+  test('入力欄1でblurイベントが発生した場合、blur-firstイベントが発火すること', () => {
+    const wrapper = mount(ZipCodeInputPresentational, { props: defaultProps })
+    const inputFirst = wrapper.findByTestId('input-first')
+    inputFirst.trigger('blur')
+    expect(wrapper.emitted('blur-first')?.length).toBe(1)
+  })
+  test('入力欄1でcompositionendイベントが発生した場合、composition-end-firstイベントが発火すること', () => {
+    const wrapper = mount(ZipCodeInputPresentational, { props: defaultProps })
+    const inputFirst = wrapper.findByTestId('input-first')
+    inputFirst.trigger('compositionend')
+    expect(wrapper.emitted('composition-end-first')?.length).toBe(1)
   })
 
-  test('blur-first: first input がフォーカスを失ったとき、イベントが発行されること', async () => {
+  test('入力欄2でinputイベントが発生した場合、input-secondイベントが発火すること', () => {
     const wrapper = mount(ZipCodeInputPresentational, { props: defaultProps })
-    const inputFirst = wrapper.find('.zipcode-input-wrapper__input-first')
-    await inputFirst.trigger('blur')
-    expect(wrapper.emitted()).toHaveProperty('blur-first')
+    const inputSecond = wrapper.findByTestId('input-second')
+    inputSecond.trigger('input')
+    expect(wrapper.emitted('input-second')?.length).toBe(1)
+  })
+  test('入力欄2でblurイベントが発生した場合、blur-secondイベントが発火すること', () => {
+    const wrapper = mount(ZipCodeInputPresentational, { props: defaultProps })
+    const inputSecond = wrapper.findByTestId('input-second')
+    inputSecond.trigger('blur')
+    expect(wrapper.emitted('blur-second')?.length).toBe(1)
+  })
+  test('入力欄2でcompositionendイベントが発生した場合、composition-end-secondイベントが発火すること', () => {
+    const wrapper = mount(ZipCodeInputPresentational, { props: defaultProps })
+    const inputSecond = wrapper.findByTestId('input-second')
+    inputSecond.trigger('compositionend')
+    expect(wrapper.emitted('composition-end-second')?.length).toBe(1)
   })
 
-  test('composition-end-first: first input で compositionend イベントが発生したとき、イベントが発行されること', async () => {
-    const wrapper = mount(ZipCodeInputPresentational, { props: defaultProps })
-    const inputFirst = wrapper.find('.zipcode-input-wrapper__input-first')
-    await inputFirst.trigger('compositionend')
-    expect(wrapper.emitted()).toHaveProperty('composition-end-first')
-  })
-
-  test('input-second: second input に値がセットされたとき、イベントが発行されること', async () => {
-    const wrapper = mount(ZipCodeInputPresentational, { props: defaultProps })
-    const inputSecond = wrapper.find('.zipcode-input-wrapper__input-second')
-    await inputSecond.setValue('4567')
-    expect(wrapper.emitted()).toHaveProperty('input-second')
-  })
-
-  test('blur-second: second input がフォーカスを失ったとき、イベントが発行されること', async () => {
-    const wrapper = mount(ZipCodeInputPresentational, { props: defaultProps })
-    const inputSecond = wrapper.find('.zipcode-input-wrapper__input-second')
-    await inputSecond.trigger('blur')
-    expect(wrapper.emitted()).toHaveProperty('blur-second')
-  })
-
-  test('composition-end-second: second input で compositionend イベントが発生したとき、イベントが発行されること', async () => {
-    const wrapper = mount(ZipCodeInputPresentational, { props: defaultProps })
-    const inputSecond = wrapper.find('.zipcode-input-wrapper__input-second')
-    await inputSecond.trigger('compositionend')
-    expect(wrapper.emitted()).toHaveProperty('composition-end-second')
-  })
-
-  test('reset-go-focus-status: goFocus が true になったとき、vFocus ディレクティブによりイベントが発行されること', async () => {
+  test('PropsでgoFocus=trueが渡されたとき、reset-go-focusイベントが発行されること', async () => {
     const wrapper = mount(ZipCodeInputPresentational, {
       props: { ...defaultProps, goFocus: false },
     })
@@ -106,7 +100,7 @@ describe('ZipCodeInputPresentational Propsのレンダリング', () => {
     const wrapper = mount(ZipCodeInputPresentational, {
       props: { ...defaultProps, textFirst: '123' },
     })
-    const inputField: HTMLInputElement = wrapper.find('.zipcode-input-wrapper__input-first')
+    const inputField: HTMLInputElement = wrapper.findByTestId('input-first')
       .element as HTMLInputElement
     expect(inputField.value).toBe('123')
   })
@@ -115,14 +109,13 @@ describe('ZipCodeInputPresentational Propsのレンダリング', () => {
     const wrapper = mount(ZipCodeInputPresentational, {
       props: { ...defaultProps, textSecond: '123' },
     })
-    const inputField: HTMLInputElement = wrapper.find('.zipcode-input-wrapper__input-second')
+    const inputField: HTMLInputElement = wrapper.findByTestId('input-second')
       .element as HTMLInputElement
     expect(inputField.value).toBe('123')
   })
 })
 
 describe('Propsで渡されたエラーによって要素を描画するテスト', () => {
-  const errorClassName = 'error-status'
   const defaultProps: Props = {
     textFirst: '',
     minLengthFirst: 3,
@@ -140,7 +133,7 @@ describe('Propsで渡されたエラーによって要素を描画するテス�
     const wrapper = mount(ZipCodeInputPresentational, {
       props: defaultProps,
     })
-    const errorField = wrapper.find(`.${errorClassName}`)
+    const errorField = wrapper.findByTestId('error-status')
     expect(errorField.exists()).toBe(false)
   })
 
@@ -148,7 +141,7 @@ describe('Propsで渡されたエラーによって要素を描画するテス�
     const wrapper = mount(ZipCodeInputPresentational, {
       props: { ...defaultProps, isInvalidCharacterUsedSecond: true },
     })
-    const errorField = wrapper.find(`.${errorClassName}`)
+    const errorField = wrapper.findByTestId('error-status')
     expect(errorField.exists()).toBe(true)
   })
 
@@ -156,7 +149,7 @@ describe('Propsで渡されたエラーによって要素を描画するテス�
     const wrapper = mount(ZipCodeInputPresentational, {
       props: { ...defaultProps, isInvalidCharacterUsedFirst: true },
     })
-    const errorField = wrapper.find(`.${errorClassName}`)
+    const errorField = wrapper.findByTestId('error-status')
     expect(errorField.text()).toContain('isInvalidCharacterUsedFirst(全角半角数字以外がある)')
   })
 
@@ -164,7 +157,7 @@ describe('Propsで渡されたエラーによって要素を描画するテス�
     const wrapper = mount(ZipCodeInputPresentational, {
       props: { ...defaultProps, isShorterThanMinLengthFirst: true },
     })
-    const errorField = wrapper.find(`.${errorClassName}`)
+    const errorField = wrapper.findByTestId('error-status')
     expect(errorField.text()).toContain(
       'isShorterThanMinLengthFirst(入力文字数がMinLengthより小さい)',
     )
@@ -174,7 +167,7 @@ describe('Propsで渡されたエラーによって要素を描画するテス�
     const wrapper = mount(ZipCodeInputPresentational, {
       props: { ...defaultProps, isInvalidCharacterUsedSecond: true },
     })
-    const errorField = wrapper.find(`.${errorClassName}`)
+    const errorField = wrapper.findByTestId('error-status')
     expect(errorField.text()).toContain('isInvalidCharacterUsedSecond(全角半角数字以外がある)')
   })
 
@@ -182,7 +175,7 @@ describe('Propsで渡されたエラーによって要素を描画するテス�
     const wrapper = mount(ZipCodeInputPresentational, {
       props: { ...defaultProps, isShorterThanMinLengthSecond: true },
     })
-    const errorField = wrapper.find(`.${errorClassName}`)
+    const errorField = wrapper.findByTestId('error-status')
     expect(errorField.text()).toContain(
       'isShorterThanMinLengthSecond(入力文字数がMinLengthより小さい)',
     )
