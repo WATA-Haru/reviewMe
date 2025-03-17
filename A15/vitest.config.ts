@@ -9,6 +9,11 @@ export default mergeConfig(
       environment: 'jsdom',
       exclude: [...configDefaults.exclude, 'e2e/**'],
       root: fileURLToPath(new URL('./', import.meta.url)),
+      includeSource: ['src/**/*.{js,ts}'],
+      setupFiles: ['./vitest.setup.ts']
+    },
+    define: {
+      'import.meta.vitest': 'undefined',
     },
   }),
 )

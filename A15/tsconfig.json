@@ -1,4 +1,10 @@
 {
+  "compilerOptions": {
+    "types": [
+      "vitest",
+      "vitest/importMeta",
+    ]
+  },
   "files": [],
   "references": [
     {
@@ -10,5 +16,6 @@
     {
       "path": "./tsconfig.vitest.json"
     }
-  ]
+  ],
 }
+
