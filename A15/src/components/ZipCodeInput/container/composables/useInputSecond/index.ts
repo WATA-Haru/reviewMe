@@ -28,39 +28,44 @@ export const useInputSecond = (minLengthSecond: number) => {
   /**
    * @description - IMEが入力中の場合以外に文字を変換する。IMEが入力中かをInputEvent.isComposintで判定する
    */
-  const handleInputSecond = (event: InputEvent) => {
-    const { target } = event
+  const handleInputSecond = (event: Event) => {
+    if (!(event instanceof InputEvent)) {
+      return
+    }
     if (event.isComposing) {
       return
     }
+    const { target } = event
     if (!(target instanceof HTMLInputElement)) {
       return
     }
     const textFromInput = target.value
-
     if (!event.isComposing) {
       textRefSecond.value = makeFullWidthNumToHalfWidthNum(textFromInput)
     }
   }
 
-  const handleCompositionEndSecond = (event: CompositionEvent) => {
+  const handleCompositionEndSecond = (event: Event) => {
+    if (!(event instanceof CompositionEvent)) {
+      return
+    }
     const { target } = event
     if (!(target instanceof HTMLInputElement)) {
       return
     }
     const textFromInput = target.value
-
     textRefSecond.value = makeFullWidthNumToHalfWidthNum(textFromInput)
   }
 
-  const handleBlurSecond = (event: FocusEvent) => {
+  const handleBlurSecond = (event: Event) => {
+    if (!(event instanceof FocusEvent)) {
+      return
+    }
     const { target } = event
     if (!(target instanceof HTMLInputElement)) {
       return
     }
-
     const textFromInput = target.value
-
     if (textFromInput.length < minLengthSecond) {
       markShort()
     }
