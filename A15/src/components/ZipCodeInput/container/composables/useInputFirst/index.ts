@@ -38,9 +38,12 @@ export const useInputFirst = (minLengthFirst: number) => {
   /**
    * @description - IMEが入力中の場合以外に文字を変換する。IMEが入力中かをInputEvent.isComposintで判定する。InputとCompositionの両方でfocusイベントを扱う理由は、IMEを伴う入力確定はisComposingで発行できるが、IMEを伴わない普通の英数字入力の場合はInput属性のisComposingを用いないと入力確定がチェックできないからだ。
    */
-  const handleInputFirst = (event: InputEvent) => {
-    const { target } = event
+  const handleInputFirst = (event: Event) => {
+    if (!(event instanceof InputEvent)) {
+      return
+    }
 
+    const { target } = event
     if (event.isComposing) {
       return
     }
@@ -49,7 +52,6 @@ export const useInputFirst = (minLengthFirst: number) => {
     }
 
     const textFromInput = target.value
-
     if (!event.isComposing) {
       textRefFirst.value = makeFullWidthNumToHalfWidthNum(textFromInput)
     }
@@ -59,7 +61,10 @@ export const useInputFirst = (minLengthFirst: number) => {
     }
   }
 
-  const handleCompositionEndFirst = (event: CompositionEvent) => {
+  const handleCompositionEndFirst = (event: Event) => {
+    if (!(event instanceof CompositionEvent)) {
+      return
+    }
     const { target } = event
     if (!(target instanceof HTMLInputElement)) {
       return
@@ -75,7 +80,11 @@ export const useInputFirst = (minLengthFirst: number) => {
    *
    * @description validationを行い、文字数が少ない場合にisShorterThanMinLengthをtrueにする
    */
-  const handleBlurFirst = (event: FocusEvent) => {
+  const handleBlurFirst = (event: Event) => {
+    if (!(event instanceof FocusEvent)) {
+      return
+    }
+
     const { target } = event
     if (!(target instanceof HTMLInputElement)) {
       return
