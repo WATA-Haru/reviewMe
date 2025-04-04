@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest'
 import { zipCloudURLWrapper } from './index.ts'
 
 describe('zipCloudURLWrapper', () => {
-  const base = 'https://zipcloud.ibsnet.co.jp/api/search'
+  const base = import.meta.env.VITE_ZIP_API_URL
 
   test(`zipCloudURLWrapperの引数がない場合、${base}が返ってくること`, () => {
     expect(zipCloudURLWrapper()).toBe(base)
