@@ -8,7 +8,7 @@ import App from './App.vue'
  * @description - setup msw on browser env official example(https://github.com/mswjs/examples/blob/main/examples/with-vue/src/main.ts)
  */
 async function prepareApp() {
-  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  if (import.meta.env.DEV) {
     const { worker } = await import('./mocks/browser')
     return worker.start()
   }
