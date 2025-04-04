@@ -22,9 +22,6 @@ const handleZipCode = async (zipcode: ZipCode) => {
     const response = await fetchAddressFromZipCode(zipcode)
     const result = response?.data?.results?.[0]
 
-    if (!response) {
-      throw new Error('fetch failed')
-    }
     if (!result?.address1 || !result?.address2 || !result?.address3) {
       throw new Error('invalid zipcode: address not found')
     }
