@@ -25,7 +25,9 @@ const addressRef = ref({
 const handleZipCode = async (zipcode: ZipCode) => {
   try {
     const response = await fetchAddressFromZipCode(zipcode)
-    const result = response?.data?.results?.[0]
+    // レスポンスの最初の住所のみを使用
+    const firstResultIndex = 0
+    const result = response?.data?.results?.[firstResultIndex]
 
     if (!result?.address1 || !result?.address2 || !result?.address3) {
       throw new Error('invalid zipcode: address not found')
