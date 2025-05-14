@@ -9,9 +9,9 @@ defineOptions({
 })
 
 const addressRef = ref({
-  address1: '',
-  address2: '',
-  address3: '',
+  addressPrefecture: '',
+  addressCity: '',
+  addressNeighborhood: '',
 })
 
 /**
@@ -25,9 +25,9 @@ const handleZipCode = async (zipcode: ZipCode) => {
     if (!result?.address1 || !result?.address2 || !result?.address3) {
       throw new Error('invalid zipcode: address not found')
     }
-    addressRef.value.address1 = result.address1
-    addressRef.value.address2 = result.address2
-    addressRef.value.address3 = result.address3
+    addressRef.value.addressPrefecture = result.address1
+    addressRef.value.addressCity = result.address2
+    addressRef.value.addressNeighborhood = result.address3
   } catch (error) {
     // TODO: API 通信が失敗した際は失敗した旨が画面上でわかるようにする（見た目はこだわらない）例外対応の実装をする
     console.error(error)
@@ -39,8 +39,8 @@ const handleZipCode = async (zipcode: ZipCode) => {
 <template>
   <ZipCodeInputContainer @send-zipcode-from-zip-code-input="handleZipCode" />
   <div>
-    {{ addressRef.address1 }}
-    {{ addressRef.address2 }}
-    {{ addressRef.address3 }}
+    {{ addressRef.addressPrefecture }}
+    {{ addressRef.addressCity }}
+    {{ addressRef.addressNeighborhood }}
   </div>
 </template>
