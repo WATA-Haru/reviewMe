@@ -8,6 +8,11 @@ defineOptions({
   name: 'FormContainer',
 })
 
+/**
+ * @description
+ * 郵便番号検索APIから取得したaddress1, address2, address3を
+ * addressPrefecture, addressCity, addressNeighborhood に対応付けて格納
+ */
 const addressRef = ref({
   addressPrefecture: '',
   addressCity: '',
