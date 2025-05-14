@@ -4,10 +4,6 @@ import { type AxiosResponse } from 'axios'
 import { type ZipCloudResponse } from '@/types/ZipCloudResponse.ts'
 import { type ZipCode } from '@/types/ZipCode.ts'
 
-const instance = axios.create({
-  baseURL: zipCloudURLWrapper(''),
-})
-
 export const fetchAddressFromZipCode = async (
   zipCode: ZipCode | null,
 ): Promise<AxiosResponse<ZipCloudResponse, never> | void> => {
@@ -15,7 +11,7 @@ export const fetchAddressFromZipCode = async (
     throw new Error('zipCode is null')
   }
   try {
-    return await instance.get(`?zipcode=${zipCode}`)
+    return await axios.get(zipCloudURLWrapper(`?zipcode=${zipCode}`))
   } catch (error) {
     throw error
   }
