@@ -29,6 +29,7 @@ const handleZipCode = async (zipcode: ZipCode) => {
     addressRef.value.address2 = result.address2
     addressRef.value.address3 = result.address3
   } catch (error) {
+    // TODO: API 通信が失敗した際は失敗した旨が画面上でわかるようにする（見た目はこだわらない）例外対応の実装をする
     console.error(error)
     return
   }
