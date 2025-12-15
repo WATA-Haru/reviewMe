@@ -1,0 +1,1 @@
+npmのdependency aleartが出るのでアーカイブにします
